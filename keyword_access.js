@@ -5,30 +5,22 @@ export function showModal(tab, callback) {
     }, (keyword) => callback(keyword));
 }
 
-export function storeEntry(url, id, keyword) {
-    console.log("store");
-    getStoredItems((items) => {
-
-        if (items === undefined) {
-            items = {};
-        }
-
+export function addEntry(url, id, keyword, callback) {
+    entries((items) => {
+        items = items || {};
         items[keyword] = {id: id, url: url};
-        console.table(items);
-        chrome.storage.local.set({keyword_access: items}, () => alert("stored " + url));
+        chrome.storage.local.set({keyword_access: items}, () => callback && callback());
     });
 }
 
-export function deleteEntry(keyword, callback) {
-    console.log("store", keyword);
-    getStoredItems((items) => {
+export function removeEntry(keyword, callback) {
+    entries((items) => {
         delete items[keyword];
         chrome.storage.local.set({keyword_access: items}, () => callback && callback());
     });
 }
 
-export function getStoredItems(callback) {
-    console.log("get");
+export function entries(callback) {
     chrome.storage.local.get('keyword_access', (items) =>
         callback(chrome.runtime.lastError ? {} : items["keyword_access"]));
 }

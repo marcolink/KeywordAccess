@@ -1,4 +1,4 @@
-import {deleteEntry, getStoredItems} from "./keyword_access.js";
+import {removeEntry, entries} from "./keyword_access.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     populateStoredEntries("entries-table");
@@ -8,7 +8,7 @@ let tableEntries = [];
 
 function populateStoredEntries(tableId) {
 
-    getStoredItems((items) => {
+    entries((items) => {
         let table = document.getElementById(tableId);
 
         for (let key in items) {
@@ -27,7 +27,7 @@ function populateStoredEntries(tableId) {
             button.innerText = "X";
 
             button.onclick = () => {
-                deleteEntry(key, () => {
+                removeEntry(key, () => {
                     tableEntries.forEach((entryRow) => entryRow.remove());
                     tableEntries = [];
                     populateStoredEntries(tableId);
