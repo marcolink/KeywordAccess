@@ -4,10 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     populateStoredEntries("entries-table");
 });
 
+let tableEntries = [];
+
 function populateStoredEntries(tableId) {
 
     getStoredItems((items) => {
         let table = document.getElementById(tableId);
+
         for (let key in items) {
             let row = table.insertRow(-1);
             let cell1 = row.insertCell(0);
@@ -22,11 +25,16 @@ function populateStoredEntries(tableId) {
             button.classList.add('btn-danger');
             button.classList.add('btn-xs');
             button.innerText = "X";
+
             button.onclick = () => {
                 deleteEntry(key, () => {
-                    //repopulate table
+                    tableEntries.forEach((entryRow) => entryRow.remove());
+                    tableEntries = [];
+                    populateStoredEntries(tableId);
                 })
             };
+
+            tableEntries.push(row);
             cell3.appendChild(button);
         }
     });
