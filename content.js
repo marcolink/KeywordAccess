@@ -20,7 +20,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         showDialog(request.url, (keyword) => sendResponse({value: keyword}));
     }
 
-    return true; /* this marks an asynchronous listener */
+    return true;
+    /* this marks an asynchronous listener */
 });
 
 function addElement(parent, type) {
@@ -73,8 +74,12 @@ function getKeywordForm(url, dialogId, callback) {
 
 function showDialog(url, callback) {
     let dialog = document.getElementById(dialogId) ||
-        createDialog(getKeywordForm(url, dialogId, (keyword) => callback(keyword)));
-    dialog.open = false; /* kinda hacky, but needed */
+        createDialog(getKeywordForm(url, dialogId, (keyword) => {
+            console.log(keyword, callback);
+            callback(keyword)
+        }));
+    dialog.open = false;
+    /* kinda hacky, but needed */
     dialog.showModal();
 }
 

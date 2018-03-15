@@ -9,7 +9,7 @@
   },
   "background": {
     "page": "background.html",
-    "persistent": false
+    "persistent": true
   },
   "content_scripts": [
     {
@@ -18,12 +18,14 @@
         "*://*/*"
       ],
       "js": [
-        "content_script.js"
+        "content.js"
       ]
     }
   ],
   "permissions": [
     "contextMenus",
-    "storage"
+    "storage",
+    "webRequest",
+    "*://*/*"
   ]
 }

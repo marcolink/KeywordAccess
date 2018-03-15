@@ -9,13 +9,26 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    console.log("1");
+
     if (info.menuItemId === menuItemId) {
+        console.log("2");
         addKeywordAccessItem(tab)
     }
 });
 
 function addKeywordAccessItem(tab) {
     chrome.tabs.sendMessage(tab.id, "getClickedElement", (clickedElement) => {
-        showModal(tab, (response) => addEntry(tab.url, clickedElement.value, response.value));
+        showModal(tab, (response) => {
+            console.log("send it");
+            console.table(response);
+            addEntry(tab.url, clickedElement.value, response.value)
+        });
     });
 }
+
+chrome.webRequest.onBeforeRequest.addListener(
+    (details) => {
+        console.log(details);
+        return true;
+    }, {urls: ["*://*/*"]});
