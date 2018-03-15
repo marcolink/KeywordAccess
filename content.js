@@ -8,20 +8,30 @@ window.addEventListener("mousedown", function (event) {
 }, true);
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request === "getClickedElement") {
-        //if (clickedElement === null) {
-        //  alert("sorry, we couldn't detect what input you want to use. make sure you first focus the right input field.")
-        //} else {
-        sendResponse({value: "lst-ib"});
-        /*clickedElement.id*/
-        //}
-    }
-    else if (typeof request === 'object' && request.action === "showDialog") {
-        showDialog(request.url, (keyword) => sendResponse({value: keyword}));
+
+    let asynchronously = false;
+
+    if (typeof request === 'object' && request.action) {
+        switch (request.action) {
+
+            case "showDialog":
+                showDialog(request.url, (keyword) => {
+                    console.log("send modal response");
+                    sendResponse({value: keyword})
+                });
+                asynchronously = true;
+                break;
+
+            case "getInputSelector":
+                sendResponse({value: "tbd"});
+                break;
+
+            default:
+                console.assert(false, `unknown action ${request.action}`)
+        }
     }
 
-    return true;
-    /* this marks an asynchronous listener */
+    return asynchronously;
 });
 
 function addElement(parent, type) {
@@ -65,6 +75,7 @@ function getKeywordForm(url, dialogId, callback) {
     form.appendChild(button);
 
     form.onsubmit = () => {
+        console.log("form call callback");
         callback(input.value);
         document.getElementById(dialogId).close();
     };
@@ -75,7 +86,7 @@ function getKeywordForm(url, dialogId, callback) {
 function showDialog(url, callback) {
     let dialog = document.getElementById(dialogId) ||
         createDialog(getKeywordForm(url, dialogId, (keyword) => {
-            console.log(keyword, callback);
+            console.log("dialog call callback");
             callback(keyword)
         }));
     dialog.open = false;

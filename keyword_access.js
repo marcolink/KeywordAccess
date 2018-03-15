@@ -1,8 +1,16 @@
 export function showModal(tab, callback) {
-    chrome.tabs.sendMessage(tab.id, {
-        action: "showDialog",
-        url: tab.url
-    }, (keyword) => callback(keyword));
+    console.debug(`show modal for tab ${tab.id}`);
+    sendMessage(tab.id, "showDialog", {url: tab.url}, (response) => callback(response.value));
+}
+
+export function sendMessage(tabId, action, data, callback){
+    chrome.tabs.sendMessage(tabId, {
+        action: action, ...data
+    }, (response) => {
+        console.assert(!chrome.runtime.lastError, `response for "${action}" has errors`, chrome.runtime.lastError);
+        console.debug(`execute callback for "${action}"`);
+        callback(response)
+    });
 }
 
 export function addEntry(url, id, keyword, callback) {

@@ -1,4 +1,4 @@
-import {showModal, addEntry} from "./keyword_access.js";
+import {showModal, addEntry, sendMessage} from "./keyword_access.js";
 
 const menuItemId = "keyword_access_menu_item";
 
@@ -9,26 +9,25 @@ chrome.contextMenus.create({
 });
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    console.log("1");
-
     if (info.menuItemId === menuItemId) {
-        console.log("2");
         addKeywordAccessItem(tab)
     }
 });
 
 function addKeywordAccessItem(tab) {
-    chrome.tabs.sendMessage(tab.id, "getClickedElement", (clickedElement) => {
-        showModal(tab, (response) => {
-            console.log("send it");
-            console.table(response);
-            addEntry(tab.url, clickedElement.value, response.value)
+    console.debug("####################################################")
+    console.log("1 request clicked element");
+    sendMessage(tab.id, "getInputSelector", null, (response) => {
+        console.log("2 request model");
+        showModal(tab, (keyword) => {
+            console.log("3 store");
+            addEntry(tab.url, response.value, keyword)
         });
     });
 }
 
-chrome.webRequest.onBeforeRequest.addListener(
-    (details) => {
-        console.log(details);
-        return true;
-    }, {urls: ["*://*/*"]});
+//chrome.webRequest.onBeforeRequest.addListener(
+//    (details) => {
+//        console.log(details);
+//        return true;
+//    }, {urls: ["*://*/*"]});
