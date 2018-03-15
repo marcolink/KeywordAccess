@@ -12,7 +12,6 @@ export function sendMessage(tabId, action, data) {
             if (error) {
                 reject(error);
             } else {
-                console.debug(`execute callback for "${action}"`);
                 resolve(response)
             }
         });
@@ -20,7 +19,6 @@ export function sendMessage(tabId, action, data) {
 }
 
 export function addEntry(url, id, keyword) {
-    console.debug(`add ${keyword}`);
     return entries()
         .then(items => {
             items[keyword] = {id: id, url: url};
@@ -31,7 +29,6 @@ export function addEntry(url, id, keyword) {
 }
 
 export function removeEntry(keyword) {
-    console.debug(`remove ${keyword}`);
     return entries()
         .then(items => {
             delete items[keyword];
@@ -42,12 +39,10 @@ export function removeEntry(keyword) {
 }
 
 export function clearEntries() {
-    console.debug(`clear all entries`);
     return chrome.storage.promise.local.clear();
 }
 
 export function entries() {
-    console.debug(`get all entries`);
     return chrome.storage.promise.local.get('keyword_access')
         .then(items => {
             return items && items["keyword_access"] ? items["keyword_access"] : {};

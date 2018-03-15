@@ -29,20 +29,12 @@ function addKeywordAccessItem(tab) {
 }
 
 function executeSearch(url, frameId) {
-    chrome.tabs.update(frameId, {url:url}, tab => {
-        console.debug("updated");
-    })
+    chrome.tabs.update(frameId, {url: url})
 }
 
 chrome.webNavigation.onCompleted.addListener(details => {
-    console.debug("onComplete");
-    if(futureAccess){
-
-        // todo check why query is not returning node!
-
-        console.debug(futureAccess.id)
-        let node = document.querySelector(futureAccess.id);
-        console.debug(node);
+    if (futureAccess) {
+        sendMessage(details.tabId, "performSearch", {...futureAccess});
     }
     futureAccess = null;
 });

@@ -27,7 +27,6 @@
   "permissions": [
     "contextMenus",
     "storage",
-    "webNavigation",
-    "input"
+    "webNavigation"
   ]
 }

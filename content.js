@@ -4,7 +4,6 @@ let clickedElement = null;
 window.addEventListener("mousedown", function (event) {
     if (event.button === 2) {
         let selector = OptimalSelect.select(event.target);
-        console.debug(selector);
         clickedElement = selector;
     }
 }, true);
@@ -18,15 +17,29 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
             case "showDialog":
                 showDialog(request.url, (keyword) => {
-                    console.log("send modal response");
                     sendResponse({value: keyword})
                 });
                 asynchronously = true;
                 break;
 
             case "getInputSelector":
-                console.debug(clickedElement);
                 sendResponse({value: clickedElement});
+                break;
+
+            case "performSearch":
+                let node = document.querySelector(request.id);
+                if (node) {
+                    node.innerText = request.value;
+                    if (node.hasAttribute("value")) {
+                        node.value = request.value;
+                    }
+                }
+                sendResponse({value: node !== undefined});
+                break;
+
+            case "debug":
+                console.table(request.entries);
+                //sendResponse({value: clickedElement});
                 break;
 
             default:
@@ -78,7 +91,6 @@ function getKeywordForm(url, dialogId, callback) {
     form.appendChild(button);
 
     form.onsubmit = () => {
-        console.log("form call callback");
         callback(input.value);
         document.getElementById(dialogId).close();
     };
@@ -89,7 +101,6 @@ function getKeywordForm(url, dialogId, callback) {
 function showDialog(url, callback) {
     let dialog = document.getElementById(dialogId) ||
         createDialog(getKeywordForm(url, dialogId, (keyword) => {
-            console.log("dialog call callback");
             callback(keyword)
         }));
     dialog.open = false;

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById("button-debug").onclick =
         () => entries()
-            .then(entries => console.table(entries))
+            .then(entries => {console.table(entries)})
             .catch(error => console.error(error));
 });
 
