@@ -2,13 +2,20 @@ import {removeEntry, entries, clearEntries} from "./keyword_access.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     populateStoredEntries("entries-table");
+
     document.getElementById("button-clear").onclick =
-        () => clearEntries().then(populateStoredEntries("entries-table"));
+        () => clearEntries()
+            .then(() => populateStoredEntries("entries-table"))
+            .catch(error => console.error(error));
 });
 
 let tableEntries = [];
 
 function populateStoredEntries(tableId) {
+
+    tableEntries.forEach((entryRow) => entryRow.remove());
+    tableEntries = [];
+
     entries().then((items) => {
 
         console.table(items);
@@ -34,8 +41,6 @@ function populateStoredEntries(tableId) {
 
             button.onclick = () => {
                 removeEntry(key, () => {
-                    tableEntries.forEach((entryRow) => entryRow.remove());
-                    tableEntries = [];
                     populateStoredEntries(tableId);
                 })
             };

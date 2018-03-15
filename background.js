@@ -15,14 +15,14 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 });
 
 function addKeywordAccessItem(tab) {
-    console.debug("####################################################")
-    console.log("1 request clicked element");
-
+    let selector = null;
     sendMessage(tab.id, "getInputSelector", null)
-        .then(response => showModal(tab))
-        .then(response => addEntry(tab.url, "tbd", response.value)) // response should be added as 2. param
-        .then(() => entries())
-        .then((data) => console.table(data))
+        .then(response => {
+            selector = response.value;
+            showModal(tab)
+                .then(response => addEntry(tab.url, selector, response.value))
+                .catch(error => console.error(error));
+        })
         .catch(error => console.error(error));
 }
 
