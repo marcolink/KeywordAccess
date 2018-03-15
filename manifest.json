@@ -19,14 +19,15 @@
       ],
       "js": [
         "content.js",
-        "vendor/chrome-storage-promise.js"
+        "vendor/chrome-storage-promise.js",
+        "vendor/optimal-select.js"
       ]
     }
   ],
   "permissions": [
     "contextMenus",
     "storage",
-    "webRequest",
-    "*://*/*"
+    "webNavigation",
+    "input"
   ]
 }

@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
         () => clearEntries()
             .then(() => populateStoredEntries("entries-table"))
             .catch(error => console.error(error));
+
+    document.getElementById("button-debug").onclick =
+        () => entries()
+            .then(entries => console.table(entries))
+            .catch(error => console.error(error));
 });
 
 let tableEntries = [];
@@ -18,12 +23,9 @@ function populateStoredEntries(tableId) {
 
     entries().then((items) => {
 
-        console.table(items);
         let table = document.getElementById(tableId);
 
         for (let key in items) {
-
-            console.debug(`add entry for ${key}`);
 
             let row = table.insertRow(-1);
             let cell1 = row.insertCell(0);
@@ -40,9 +42,7 @@ function populateStoredEntries(tableId) {
             button.innerText = "X";
 
             button.onclick = () => {
-                removeEntry(key, () => {
-                    populateStoredEntries(tableId);
-                })
+                removeEntry(key).then(() => populateStoredEntries(tableId)).catch(error => console.error(error));
             };
 
             tableEntries.push(row);

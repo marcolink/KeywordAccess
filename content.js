@@ -3,7 +3,9 @@ let clickedElement = null;
 
 window.addEventListener("mousedown", function (event) {
     if (event.button === 2) {
-        clickedElement = event.target;
+        let selector = OptimalSelect.select(event.target);
+        console.debug(selector);
+        clickedElement = selector;
     }
 }, true);
 
@@ -23,7 +25,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 break;
 
             case "getInputSelector":
-                sendResponse({value: "tbd"});
+                console.debug(clickedElement);
+                sendResponse({value: clickedElement});
                 break;
 
             default:
