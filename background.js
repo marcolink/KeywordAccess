@@ -1,4 +1,4 @@
-import {showModal, addEntry, sendMessage} from "./keyword_access.js";
+import {showModal, addEntry, sendMessage, entries} from "./keyword_access.js";
 
 const menuItemId = "keyword_access_menu_item";
 
@@ -17,13 +17,13 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 function addKeywordAccessItem(tab) {
     console.debug("####################################################")
     console.log("1 request clicked element");
-    sendMessage(tab.id, "getInputSelector", null, (response) => {
-        console.log("2 request model");
-        showModal(tab, (keyword) => {
-            console.log("3 store");
-            addEntry(tab.url, response.value, keyword)
-        });
-    });
+
+    sendMessage(tab.id, "getInputSelector", null)
+        .then(response => showModal(tab))
+        .then(response => addEntry(tab.url, "tbd", response.value)) // response should be added as 2. param
+        .then(() => entries())
+        .then((data) => console.table(data))
+        .catch(error => console.error(error));
 }
 
 //chrome.webRequest.onBeforeRequest.addListener(

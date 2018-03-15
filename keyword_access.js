@@ -1,34 +1,56 @@
-export function showModal(tab, callback) {
+export function showModal(tab) {
     console.debug(`show modal for tab ${tab.id}`);
-    sendMessage(tab.id, "showDialog", {url: tab.url}, (response) => callback(response.value));
+    return sendMessage(tab.id, "showDialog", {url: tab.url});
 }
 
-export function sendMessage(tabId, action, data, callback){
-    chrome.tabs.sendMessage(tabId, {
-        action: action, ...data
-    }, (response) => {
-        console.assert(!chrome.runtime.lastError, `response for "${action}" has errors`, chrome.runtime.lastError);
-        console.debug(`execute callback for "${action}"`);
-        callback(response)
+export function sendMessage(tabId, action, data) {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.sendMessage(tabId, {
+            action: action, ...data
+        }, (response) => {
+            let error = chrome.runtime.lastError;
+            if (error) {
+                reject(error);
+            } else {
+                console.debug(`execute callback for "${action}"`);
+                resolve(response)
+            }
+        });
     });
 }
 
-export function addEntry(url, id, keyword, callback) {
-    entries((items) => {
-        items = items || {};
-        items[keyword] = {id: id, url: url};
-        chrome.storage.local.set({keyword_access: items}, () => callback && callback());
-    });
+export function addEntry(url, id, keyword) {
+    console.debug(`add ${keyword}`);
+    return entries()
+        .then(items => {
+            items[keyword] = {id: id, url: url};
+            return items;
+        })
+        .then(items => chrome.storage.promise.local.set({keyword_access: items}))
+        .catch(error => console.error(error));
 }
 
-export function removeEntry(keyword, callback) {
-    entries((items) => {
-        delete items[keyword];
-        chrome.storage.local.set({keyword_access: items}, () => callback && callback());
-    });
+export function removeEntry(keyword) {
+    console.debug(`remove ${keyword}`);
+    return entries()
+        .then(items => {
+            delete items[keyword];
+            return items;
+        })
+        .then(items => chrome.storage.promise.local.set({keyword_access: items}))
+        .catch(error => console.error(error));
 }
 
-export function entries(callback) {
-    chrome.storage.local.get('keyword_access', (items) =>
-        callback(chrome.runtime.lastError ? {} : items["keyword_access"]));
+export function clearEntries() {
+    console.debug(`clear all entries`);
+    return chrome.storage.promise.local.clear();
+}
+
+export function entries() {
+    console.debug(`get all entries`);
+    return chrome.storage.promise.local.get('keyword_access')
+        .then(items => {
+            return items && items["keyword_access"] ? items["keyword_access"] : {};
+        })
+        .catch(error => console.error(error));
 }

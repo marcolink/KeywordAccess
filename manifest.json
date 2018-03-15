@@ -18,7 +18,8 @@
         "*://*/*"
       ],
       "js": [
-        "content.js"
+        "content.js",
+        "vendor/chrome-storage-promise.js"
       ]
     }
   ],
