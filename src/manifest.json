@@ -16,7 +16,9 @@
       "matches": [
         "*://*/*"
       ],
-      "js": ["content.bundle.js"]
+      "js": [
+        "content.bundle.js"
+      ]
     }
   ],
   "options_page": "options.html",
@@ -24,5 +26,12 @@
     "contextMenus",
     "storage",
     "webNavigation"
-  ]
+  ],
+  "web_accessible_resources": [
+    "js/*",
+    "html/*",
+    "css/*",
+    "images/*"
+  ],
+  "content_security_policy": "script-src 'self'; object-src 'self'"
 }

@@ -1,3 +1,5 @@
+require("chrome-storage-promise");
+
 export function showModal(tab) {
     console.debug(`show modal for tab ${tab.id}`);
     return sendMessage(tab.id, "showDialog", {url: tab.url});
