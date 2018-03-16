@@ -1,3 +1,4 @@
+const OptimalSelect = require("optimal-select");
 const dialogId = "keyword_access_dialog";
 let clickedElement = null;
 
