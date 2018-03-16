@@ -43,7 +43,7 @@ var options = {
             },
             {
                 test: /\.html$/,
-                loader: "html-loader",      
+                loader: "html-loader",
                 exclude: /node_modules/
             },
             {
@@ -95,7 +95,7 @@ var options = {
 };
 
 if (env.NODE_ENV === "development") {
-    options.devtool = "cheap-module-eval-source-map";
+    options.devtool = "inline-source-map";
 }
 
 module.exports = options;
