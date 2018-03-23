@@ -16,7 +16,6 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
 });
 
 function addKeywordAccessItem(tab) {
-
     let selector = null;
     sendMessage(tab.id, "getInputSelector", null)
         .then(response => {
@@ -45,7 +44,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(details => {
         result.forEach(kv => {
             maybeGetConfiguration(kv.key).then(configuration => {
                 if (configuration) {
-                    futureAccess = {keyword: kv.key, value: kv.value, ...configuration};
+                    futureAccess = {keyword: kv.key.trim(), value: kv.value.trim(), ...configuration};
                     executeSearch(futureAccess.url, details.tabId);
                 }
             })

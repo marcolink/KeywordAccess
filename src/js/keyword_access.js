@@ -7,9 +7,13 @@ export function showModal(tab) {
 
 export function sendMessage(tabId, action, data) {
     return new Promise((resolve, reject) => {
+        console.debug(`send message "${action}"`);
+        console.table(data);
         chrome.tabs.sendMessage(tabId, {
             action: action, ...data
         }, (response) => {
+            console.debug(`send message response "${action}"`);
+            console.table(response);
             let error = chrome.runtime.lastError;
             if (error) {
                 reject(error);

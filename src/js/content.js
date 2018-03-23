@@ -31,9 +31,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 let node = document.querySelector(request.id);
                 if (node) {
                     node.innerText = request.value;
-                    if (node.hasAttribute("value")) {
-                        node.value = request.value;
-                    }
+                    node.value = request.value;
+                    node.form.submit();
                 }
                 sendResponse({value: node !== undefined});
                 break;
@@ -92,7 +91,7 @@ function getKeywordForm(url, dialogId, callback) {
     form.appendChild(button);
 
     form.onsubmit = () => {
-        callback(input.value);
+        callback(input.value.trim());
         document.getElementById(dialogId).close();
     };
 
