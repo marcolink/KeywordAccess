@@ -7,7 +7,7 @@ export function showModal(tab) {
 
 export function sendMessage(tabId, action, data) {
     return new Promise((resolve, reject) => {
-        console.debug(`send message "${action}"`);
+        console.debug(`send message "${action}" with tab-id: "${tabId}"`);
         console.table(data);
         chrome.tabs.sendMessage(tabId, {
             action: action, ...data
@@ -25,6 +25,9 @@ export function sendMessage(tabId, action, data) {
 }
 
 export function addEntry(url, id, keyword) {
+
+    console.warn(`ADD ENTRY: ${keyword}`);
+
     return entries()
         .then(items => {
             items[keyword] = {id: id, url: url};
@@ -55,3 +58,4 @@ export function entries() {
         })
         .catch(error => console.error(error));
 }
+

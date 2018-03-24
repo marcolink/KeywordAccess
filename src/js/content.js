@@ -37,11 +37,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
                 sendResponse({value: node !== undefined});
                 break;
 
-            case "debug":
-                console.table(request.entries);
-                //sendResponse({value: clickedElement});
-                break;
-
             default:
                 console.assert(false, `unknown action ${request.action}`)
         }
@@ -103,6 +98,7 @@ function showDialog(url, callback) {
         createDialog(getKeywordForm(url, dialogId, (keyword) => {
             callback(keyword)
         }));
+    dialog.getElementsByTagName("form").item(0).reset();
     dialog.open = false;
     /* kinda hacky, but needed */
     dialog.showModal();

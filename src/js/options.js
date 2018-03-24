@@ -8,11 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
         () => clearEntries()
             .then(() => populateStoredEntries("entries-table"))
             .catch(error => console.error(error));
-
-    document.getElementById("button-debug").onclick =
-        () => entries()
-            .then(entries => {console.table(entries)})
-            .catch(error => console.error(error));
 });
 
 let tableEntries = [];
