@@ -6,22 +6,40 @@ import PropTypes from "prop-types";
 
 export class OptionsList extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {items: null};
+        this.fetchItems();
+    }
+
+    fetchItems() {
+        entries().then((items) => this.setState({items: items}));
+    }
+
     render() {
+        let items = this.state.items;
         let listItems = [];
 
-        entries().then((items) => {
-            for (let key in items) {
-                listItems.push(<OptionsListItem accessKey={key} url={items[key]["url"] || "no url set"}/>)
-            }
-        }).catch(error => console.error(error));
+        for (let key in items) {
+            listItems.push(<OptionsListItem key={key} accessKey={key} url={items[key]["url"]}/>)
+        }
 
-        return <table className="table table-striped" id="entries-table">{listItems}</table>;
+        console.info(`${listItems.length} items to add`);
+
+        return (<table className="table table-striped" id="entries-table">
+            <thead>
+            <tr>
+                <th>Keyword</th>
+                <th>Url</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody id="entries-table-body">{listItems}</tbody>
+
+        </table>);
     }
 
-    static propTypes = {
-        accessKey: PropTypes.instanceOf(String),
-        url: PropTypes.instanceOf(String)
-    }
+    static propTypes = {}
 }
 
 export class OptionsListItem extends React.Component {
@@ -47,11 +65,11 @@ export class OptionsListItem extends React.Component {
     }
 
     static propTypes = {
-        accessKey: PropTypes.instanceOf(String),
-        url: PropTypes.instanceOf(String)
+        accessKey: PropTypes.string,
+        url: PropTypes.string,
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    ReactDOM.render(React.createElement(OptionsList, {}, null), document.body.appendChild(document.createElement('div')))
+    ReactDOM.render(<OptionsList/>, document.getElementById("content"));
 });
