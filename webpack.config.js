@@ -1,16 +1,14 @@
-const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const WebpackChromeReloaderPlugin = require("webpack-chrome-extension-reloader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const path = require("path");
 
-var options = {
+module.exports = {
     devtool: "source-map",
     entry: {
         popup: path.join(__dirname, "src", "js", "popup.js"),
-        options: path.join(__dirname, "src", "js", "options.js"),
+        options: path.join(__dirname, "src", "js", "options.jsx"),
         background: path.join(__dirname, "src", "js", "background.js"),
         content: path.join(__dirname, "src", "js", "content.js")
     },
@@ -18,6 +16,11 @@ var options = {
         path: path.join(__dirname, "build"),
         filename: "[name].bundle.js"
     },
+
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
+
     plugins: [
 
         process.env.NODE_ENV === "development" ? new WebpackChromeReloaderPlugin({
@@ -59,19 +62,19 @@ var options = {
         new WriteFilePlugin()
 
     ].filter(plugin => !!plugin),
+
     module: {
-        rules: [{
-            test: /\.js?$/,
-            exclude: /node_modules/,
-            use: {
-                loader: "babel-loader",
-                options: {
-                    presets: ["react-hmre", "stage-2"]
+        rules: [
+            {
+                test: /\.jsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader'
                 }
             }
-        }]
+        ]
     }
 };
 
-module.exports = options;
+
 
